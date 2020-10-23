@@ -89,6 +89,18 @@ public class ProductController {
         productDao.save(product);
     }
 
+    // Afficher les marge
+    @GetMapping(value = "/Products/marge")
+    public void calculerMargeProduit() {
+        Iterable<Product> produits = productDao.findAll();
+
+        for( Product p : produits ) {
+            int np = p.getPrix()-p.getPrixAchat();
+            System.out.println(p +""+ np);
+        }
+    }
+
+
 
     //Pour les tests
     @GetMapping(value = "test/produits/{prix}")
