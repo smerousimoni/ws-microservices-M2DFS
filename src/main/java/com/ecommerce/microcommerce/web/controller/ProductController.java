@@ -2,12 +2,9 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
-import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -19,7 +16,6 @@ import java.net.URI;
 import java.util.List;
 
 
-
 public class ProductController {
 
     @Autowired
@@ -27,7 +23,7 @@ public class ProductController {
 
 
     //Récupérer la liste des produits
-    @RequestMapping(value = "/Produits", method = RequestMethod.GET)
+    @RequestMapping(value = "/Products", method = RequestMethod.GET)
     public MappingJacksonValue listeProduits() {
         Iterable<Product> produits = productDao.findAll();
         SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
@@ -36,6 +32,33 @@ public class ProductController {
         produitsFiltres.setFilters(listDeNosFiltres);
         return produitsFiltres;
     }
+
+    //Récupérer la liste des produits selon l'id
+    @RequestMapping(value = "Products/{id}", method = RequestMethod.GET)
+    public List<Product> getProductById(@PathVariable int id) {
+        System.out.println("Getting Product details for " + id);
+
+        // method core to get student and manage if null
+        //List<Product> productList = new ArrayList<Product>();
+        //return productDao.stream().filter(product -> product.getId() == id).collect(Collectors.toList());
+        return (List<Product>) productDao.findById(id);
+    }
+
+    @RequestMapping(value = "Products/delete/{id}", method = RequestMethod.GET)
+    public void deleteProduct(@PathVariable int id) {
+        System.out.println("Getting Product details for " + id);
+
+        // method core to get student and manage if null
+        //List<Product> productList = new ArrayList<Product>();
+        //return productDao.stream().filter(product -> product.getId() == id).collect(Collectors.toList());
+        productDao.delete(id);
+    }
+
+    @RequestMapping(value = "Products/update/{id}/{price}", method = RequestMethod.GET)
+    public void changePriceProduct(@PathVariable int id,@PathVariable int price) {
+        productDao.findById(id).setPrix(price);
+    }
+
 
 
     //Récupérer un produit par son Id
