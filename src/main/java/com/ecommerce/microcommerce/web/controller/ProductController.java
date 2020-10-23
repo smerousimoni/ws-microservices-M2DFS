@@ -2,6 +2,7 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.ProduitPrixEgaleZeroException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -84,9 +85,10 @@ public class ProductController {
     }
 
     // Mettre à jour un produit
-    @RequestMapping(value = "/Products/update/{id}", method = RequestMethod.GET)
+    @PostMapping(value ="/Products/update")
     public void updateProduit(@RequestBody Product product) {
         productDao.save(product);
+        produitPrixEgaleZero();
     }
 
     // Afficher les marge
@@ -100,14 +102,29 @@ public class ProductController {
         }
     }
 
+    // sécurité
+    public void produitPrixEgaleZero() {
+        Iterable<Product> produits = productDao.findAll();
+
+        for( Product p : produits ) {
+            if (p.getPrix() == 0){
+                throw new ProduitPrixEgaleZeroException("Le prix du produit est égale a Zero !");
+            }
+        }
+    }
 
 
-    //Pour les tests
+
+
+        //Pour les tests
     @GetMapping(value = "test/produits/{prix}")
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
         return productDao.chercherUnProduitCher(400);
     }
 
-
+    /*@GetMapping(value = "/Product/ordre")
+    public List<Product>  produitOrdreAlphabetique() {
+        return productDao.FindByOrderByNomAsc();
+    }*/
 
 }
