@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-
+@RestController
 public class ProductController {
 
     @Autowired
@@ -34,17 +34,17 @@ public class ProductController {
     }
 
     //Récupérer la liste des produits selon l'id
-    @RequestMapping(value = "Products/{id}", method = RequestMethod.GET)
-    public List<Product> getProductById(@PathVariable int id) {
+    @RequestMapping(value = "/Products/{id}", method = RequestMethod.GET)
+    public Product getProductById(@PathVariable int id) {
         System.out.println("Getting Product details for " + id);
 
         // method core to get student and manage if null
         //List<Product> productList = new ArrayList<Product>();
         //return productDao.stream().filter(product -> product.getId() == id).collect(Collectors.toList());
-        return (List<Product>) productDao.findById(id);
+        return productDao.findById(id);
     }
 
-    @RequestMapping(value = "Products/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/Products/delete/{id}", method = RequestMethod.GET)
     public void deleteProduct(@PathVariable int id) {
         System.out.println("Getting Product details for " + id);
 
@@ -54,19 +54,11 @@ public class ProductController {
         productDao.delete(id);
     }
 
-    @RequestMapping(value = "Products/update/{id}/{price}", method = RequestMethod.GET)
-    public void changePriceProduct(@PathVariable int id,@PathVariable int price) {
-        productDao.findById(id).setPrix(price);
-    }
-
-
 
     //Récupérer un produit par son Id
     public Product afficherUnProduit() {
         return null;
     }
-
-
 
 
     //ajouter un produit
@@ -92,7 +84,9 @@ public class ProductController {
     }
 
     // Mettre à jour un produit
+    @RequestMapping(value = "/Products/update/{id}", method = RequestMethod.GET)
     public void updateProduit(@RequestBody Product product) {
+        productDao.save(product);
     }
 
 
